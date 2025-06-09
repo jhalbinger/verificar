@@ -8,16 +8,20 @@ import json
 firebase_json = os.environ.get("FIREBASE_CREDENTIALS")
 
 if not firebase_json:
-    raise Exception("Falta la variable de entorno FIREBASE_CREDENTIALS")
+    raise Exception("❌ Falta la variable de entorno FIREBASE_CREDENTIALS")
 
 cred_dict = json.loads(firebase_json)
-cred = credentials.Certificate(cred_dict)
 
-# 🌐 Inicializar conexión a Firebase
+# 🔄 Convertir los \\n a saltos de línea reales
+cred_dict["private_key"] = cred_dict["private_key"].replace("\\n", "\n")
+
+# 🔗 Inicializar Firebase
+cred = credentials.Certificate(cred_dict)
 firebase_admin.initialize_app(cred, {
     'databaseURL': 'https://usuarios-5be49-default-rtdb.firebaseio.com/'
 })
 
+# 🚀 Crear app Flask
 app = Flask(__name__)
 
 @app.route("/")
