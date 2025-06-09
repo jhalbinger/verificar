@@ -1,11 +1,19 @@
-# verificador-nombre/app.py
-
 from flask import Flask, request, jsonify
 import firebase_admin
 from firebase_admin import credentials, db
+import os
+import json
 
-# Inicializamos la app de Firebase solo una vez
-cred = credentials.Certificate("usuarios-5be49-firebase-adminsdk-fbsvc-644630ef9d.json")
+# 🔐 Leer el JSON de credenciales desde variable de entorno
+firebase_json = os.environ.get("FIREBASE_CREDENTIALS")
+
+if not firebase_json:
+    raise Exception("Falta la variable de entorno FIREBASE_CREDENTIALS")
+
+cred_dict = json.loads(firebase_json)
+cred = credentials.Certificate(cred_dict)
+
+# 🌐 Inicializar conexión a Firebase
 firebase_admin.initialize_app(cred, {
     'databaseURL': 'https://usuarios-5be49-default-rtdb.firebaseio.com/'
 })
